@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import ytdlp from 'yt-dlp-exec';
+import YTDlpWrap from 'yt-dlp-wrap';
+
+const ytDlp = new YTDlpWrap();
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -13,16 +15,17 @@ export async function GET(request) {
 
     try {
         // Get video info using yt-dlp
-        const info = await ytdlp(url, {
-            dumpSingleJson: true,
-            noCheckCertificates: true,
-            noWarnings: true,
-            preferFreeFormats: true,
-            addHeader: [
-                'referer:youtube.com',
-                'user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            ]
-        });
+        const output = await ytDlp.execPromise([
+            url,
+            '--dump-single-json',
+            '--no-check-certificates',
+            '--no-warnings',
+            '--prefer-free-formats',
+            '--add-header', 'referer:youtube.com',
+            '--add-header', 'user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        ]);
+
+        const info = JSON.parse(output);
 
         let selectedFormat;
 

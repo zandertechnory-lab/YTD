@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import ytdlp from 'yt-dlp-exec';
+import YTDlpWrap from 'yt-dlp-wrap';
+
+const ytDlp = new YTDlpWrap();
 
 export async function POST(request) {
     try {
@@ -10,12 +12,15 @@ export async function POST(request) {
         }
 
         // Fetch video metadata using yt-dlp
-        const info = await ytdlp(url, {
-            dumpSingleJson: true,
-            noCheckCertificates: true,
-            noWarnings: true,
-            skipDownload: true,
-        });
+        const output = await ytDlp.execPromise([
+            url,
+            '--dump-single-json',
+            '--no-check-certificates',
+            '--no-warnings',
+            '--skip-download'
+        ]);
+
+        const info = JSON.parse(output);
 
         // Extract relevant metadata
         const metadata = {
