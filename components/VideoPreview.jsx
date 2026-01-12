@@ -133,7 +133,7 @@ const VideoPreview = ({ videoData, onDownload }) => {
                             <NeonButton onClick={handleDownload} className="w-full group relative overflow-hidden py-4 md:py-3" variant="primary">
                                 <span className="relative z-10 flex items-center justify-center gap-2 font-semibold">
                                     <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
-                                    Download {isAudioOnly ? 'MP3' : 'MP4'}
+                                    Download via Y2Mate
                                 </span>
                                 <div className="absolute inset-0 bg-linear-to-r from-neon-blue via-neon-purple to-neon-pink opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                             </NeonButton>

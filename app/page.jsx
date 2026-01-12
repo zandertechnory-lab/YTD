@@ -49,36 +49,25 @@ export default function Home() {
 
     const handleDownload = async ({ quality, isAudioOnly, onProgress }) => {
         try {
-            const type = isAudioOnly ? 'audio' : 'video';
-            const apiUrl = `/api/download?url=${encodeURIComponent(url)}&quality=${quality}&type=${type}`;
+            // Redirect to external downloader instead of downloading through our server
+            // This avoids YouTube's bot detection issues
 
-            // Fetch the download URL from our API
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                const errJson = await response.json();
-                throw new Error(errJson.error || 'Download failed');
-            }
+            // Popular external downloaders:
+            // 1. y2mate.com - Most reliable
+            // 2. savefrom.net - Fast and simple
+            // 3. yt1s.com - Clean UI
 
-            const data = await response.json();
+            const externalDownloader = `https://www.y2mate.com/youtube/${encodeURIComponent(url)}`;
 
-            // Use the direct download URL from yt-dlp
-            const { downloadUrl, title, ext } = data;
-
-            // Create download link
-            const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.${ext}`;
-            a.target = '_blank'; // Open in new tab to trigger download
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            // Open in new tab
+            window.open(externalDownloader, '_blank');
 
             onProgress(100);
-            toast.success('Download started!');
+            toast.success('Opening external downloader...');
 
         } catch (err) {
             console.error(err);
-            const errorMessage = err.message || 'Download failed. Please try again.';
+            const errorMessage = err.message || 'Failed to open downloader';
             toast.error(errorMessage);
         }
     };
