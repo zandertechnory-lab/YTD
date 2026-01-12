@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import YTDlpWrap from 'yt-dlp-wrap';
-
-const ytDlp = new YTDlpWrap();
+import ytdl from '@distube/ytdl-core';
 
 export async function POST(request) {
     try {
@@ -11,24 +9,16 @@ export async function POST(request) {
             return NextResponse.json({ error: 'URL is required' }, { status: 400 });
         }
 
-        // Fetch video metadata using yt-dlp
-        const output = await ytDlp.execPromise([
-            url,
-            '--dump-single-json',
-            '--no-check-certificates',
-            '--no-warnings',
-            '--skip-download'
-        ]);
-
-        const info = JSON.parse(output);
+        // Fetch video metadata using ytdl-core
+        const info = await ytdl.getInfo(url);
 
         // Extract relevant metadata
         const metadata = {
-            title: info.title,
-            thumbnail: info.thumbnail,
-            duration: formatDuration(info.duration),
-            author: info.uploader || info.channel,
-            formats: info.formats?.length || 0,
+            title: info.videoDetails.title,
+            thumbnail: info.videoDetails.thumbnails[info.videoDetails.thumbnails.length - 1].url,
+            duration: formatDuration(parseInt(info.videoDetails.lengthSeconds)),
+            author: info.videoDetails.author.name,
+            formats: info.formats.length,
         };
 
         return NextResponse.json(metadata);
