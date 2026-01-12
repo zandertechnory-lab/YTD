@@ -50,75 +50,36 @@ export default function Home() {
     const handleDownload = async ({ quality, isAudioOnly, onProgress }) => {
         try {
             const type = isAudioOnly ? 'audio' : 'video';
-            const downloadUrl = `/api/download?url=${encodeURIComponent(url)}&quality=${quality}&type=${type}`;
+            const apiUrl = `/api/download?url=${encodeURIComponent(url)}&quality=${quality}&type=${type}`;
 
-            // Use fetch for downloading the streamed video
-            const response = await fetch(downloadUrl);
+            // Fetch the download URL from our API
+            const response = await fetch(apiUrl);
             if (!response.ok) {
-                // Try to parse JSON error from server
-                let errMsg = 'Download failed';
-                try {
-                    const errJson = await response.json();
-                    errMsg = errJson.error || errMsg;
-                } catch (e) {
-                    // ignore parsing error
-                }
-                throw new Error(errMsg);
+                const errJson = await response.json();
+                throw new Error(errJson.error || 'Download failed');
             }
-            const blob = await response.blob();
-            // Note: Fetch API doesn't provide direct progress events for downloads
-            // in the browser like XHR/axios. onProgress will only be called at the end.
-            onProgress(100); // Indicate completion after blob is received
 
-            // Create blob link to download
-            const blobUrl = window.URL.createObjectURL(blob);
+            const data = await response.json();
+
+            // Use the direct download URL from yt-dlp
+            const { downloadUrl, title, ext } = data;
+
+            // Create download link
             const a = document.createElement('a');
-            a.href = blobUrl;
-
-            // Try to extract filename from headers if possible, or fallback
-            // Axios headers are lowercase
-            const contentDisposition = response.headers['content-disposition'];
-            let filename = videoData.title.replace(/[^a-z0-9]/gi, '_') + (isAudioOnly ? '.mp3' : '.mp4');
-
-            if (contentDisposition) {
-                const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
-                if (filenameMatch && filenameMatch.length === 2) {
-                    filename = filenameMatch[1];
-                }
-            }
-
-            a.download = filename;
+            a.href = downloadUrl;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.${ext}`;
+            a.target = '_blank'; // Open in new tab to trigger download
             document.body.appendChild(a);
             a.click();
-
-            // Cleanup
-            window.URL.revokeObjectURL(blobUrl);
             document.body.removeChild(a);
+
             onProgress(100);
-            toast.success('Download completed!');
+            toast.success('Download started!');
 
         } catch (err) {
             console.error(err);
-            let errorMessage = 'Download failed. Please try again.';
-
-            if (err.response?.data instanceof Blob) {
-                try {
-                    const text = await err.response.data.text();
-                    const json = JSON.parse(text);
-                    if (json.error) errorMessage = json.error;
-                    // Append details if available for debugging
-                    if (json.details && json.details !== json.error) errorMessage += ` (${json.details})`;
-                } catch (e) {
-                    // fall back to default
-                }
-            } else if (err.response?.data?.error) {
-                errorMessage = err.response.data.error;
-            } else if (err.message) {
-                errorMessage = err.message;
-            }
-
+            const errorMessage = err.message || 'Download failed. Please try again.';
             toast.error(errorMessage);
-            // throw err; // Don't throw to avoid unhandled rejection in UI
         }
     };
 

@@ -1,63 +1,49 @@
 import { NextResponse } from 'next/server';
-import ytdl from '@distube/ytdl-core';
-import { cacheVideoInfo } from '@/app/lib/cache';
-import { formatDuration } from '@/lib/youtube';
+import ytdlp from 'yt-dlp-exec';
 
 export async function POST(request) {
     try {
         const { url } = await request.json();
 
-        if (!ytdl.validateURL(url)) {
-            return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 });
+        if (!url) {
+            return NextResponse.json({ error: 'URL is required' }, { status: 400 });
         }
 
-        // Remove custom agent with empty cookies as it might trigger anti-bot
-        // const agent = ytdl.createAgent([
-        //     {
-        //         name: "cookie",
-        //         value: "", // Cookies key can be added here if needed for age-gated content
-        //     },
-        // ]);
-
-        const info = await ytdl.getInfo(url, {
-            requestOptions: {
-                headers: {
-                    // Use a slightly different common User-Agent
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                }
-            }
+        // Fetch video metadata using yt-dlp
+        const info = await ytdlp(url, {
+            dumpSingleJson: true,
+            noCheckCertificates: true,
+            noWarnings: true,
+            skipDownload: true,
         });
 
-        // Cache the info to reuse in download
-        cacheVideoInfo(url, info);
-
-        const videoDetails = info.videoDetails;
-
-        // Extract available formats
-        const formats = info.formats || [];
-        const qualities = new Set();
-        formats.forEach(f => {
-            if (f.qualityLabel) qualities.add(f.qualityLabel);
-        });
-
+        // Extract relevant metadata
         const metadata = {
-            title: videoDetails.title,
-            thumbnail: videoDetails.thumbnails[videoDetails.thumbnails.length - 1].url, // Highest res
-            duration: formatDuration(videoDetails.lengthSeconds),
-            author: videoDetails.author.name,
-            url: videoDetails.video_url,
-            qualities: Array.from(qualities).sort((a, b) => {
-                // Sort resolution simply
-                return parseInt(b) - parseInt(a);
-            }),
+            title: info.title,
+            thumbnail: info.thumbnail,
+            duration: formatDuration(info.duration),
+            author: info.uploader || info.channel,
+            formats: info.formats?.length || 0,
         };
 
         return NextResponse.json(metadata);
     } catch (error) {
-        console.error('Metadata fetch error:', error); // Log the full error
-        // Return the actual error message if useful
-        return NextResponse.json({ error: error.message || 'Failed to fetch video details' }, { status: 500 });
+        console.error('Metadata fetch error:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch video metadata', details: error.message },
+            { status: 500 }
+        );
     }
+}
+
+function formatDuration(seconds) {
+    if (!seconds) return '0:00';
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    if (hrs > 0) {
+        return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
