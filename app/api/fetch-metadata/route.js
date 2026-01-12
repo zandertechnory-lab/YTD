@@ -9,8 +9,20 @@ export async function POST(request) {
             return NextResponse.json({ error: 'URL is required' }, { status: 400 });
         }
 
-        // Fetch video metadata using ytdl-core
-        const info = await ytdl.getInfo(url);
+        // Fetch video metadata using ytdl-core with cookies to bypass bot detection
+        const agent = ytdl.createAgent(undefined, {
+            localAddress: undefined,
+        });
+
+        const info = await ytdl.getInfo(url, {
+            agent,
+            requestOptions: {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                }
+            }
+        });
 
         // Extract relevant metadata
         const metadata = {
