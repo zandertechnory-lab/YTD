@@ -52,12 +52,8 @@ export default function Home() {
             // Redirect to external downloader instead of downloading through our server
             // This avoids YouTube's bot detection issues
 
-            // Popular external downloaders:
-            // 1. y2mate.com - Most reliable
-            // 2. savefrom.net - Fast and simple
-            // 3. yt1s.com - Clean UI
-
-            const externalDownloader = `https://www.y2mate.com/youtube/${encodeURIComponent(url)}`;
+            // Using savefrom.net - it accepts the YouTube URL directly as a parameter
+            const externalDownloader = `https://savefrom.net/#url=${encodeURIComponent(url)}`;
 
             // Open in new tab
             window.open(externalDownloader, '_blank');
