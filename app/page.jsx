@@ -134,6 +134,77 @@ export default function Home() {
                 )}
             </motion.div>
 
+            {/* About Section - Shows on mobile when About tab is active */}
+            {activeTab === 'about' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="relative z-10 w-full max-w-2xl mx-auto px-4 pb-24"
+                >
+                    <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 space-y-6">
+                        <h2 className="text-2xl font-bold text-white mb-4">About NeonDownloader</h2>
+
+                        <p className="text-gray-300 leading-relaxed">
+                            NeonDownloader is a modern YouTube video downloader portal with a beautiful cyberpunk-themed interface.
+                            We make it easy to download your favorite YouTube videos by connecting you to reliable download services.
+                        </p>
+
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-neon-blue">Features</h3>
+                            <ul className="space-y-2 text-gray-300">
+                                <li className="flex items-start gap-2">
+                                    <span className="text-neon-blue mt-1">•</span>
+                                    <span>Beautiful, modern UI with neon aesthetics</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-neon-blue mt-1">•</span>
+                                    <span>Mobile-first design with PWA support</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-neon-blue mt-1">•</span>
+                                    <span>Quick redirect to trusted download services</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-neon-blue mt-1">•</span>
+                                    <span>No ads, no tracking, completely free</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Creator & Partner Info on Mobile */}
+                        <div className="space-y-3 pt-4 border-t border-white/10">
+                            <div className="flex items-center gap-3 bg-black/40 px-4 py-3 rounded-xl border border-white/10">
+                                <img
+                                    src="/creator-logo.png"
+                                    alt="EmmaTechnocom Logo"
+                                    className="w-10 h-10 rounded-full shadow-[0_0_10px_rgba(0,243,255,0.3)]"
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-gray-400 font-light tracking-wide uppercase">Created by</span>
+                                    <span className="text-base font-bold bg-linear-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+                                        EmmaTechnocom
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 bg-black/40 px-4 py-3 rounded-xl border border-white/10">
+                                <img
+                                    src="/partner-logo.png"
+                                    alt="Digital Flux Logo"
+                                    className="w-10 h-10 object-contain"
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-gray-400 font-light tracking-wide uppercase">Partner</span>
+                                    <span className="text-base font-bold text-white">
+                                        Digital Flux
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
+
             {/* Footer / Copyright - Hidden on Mobile to avoid clutter with Bottom Nav */}
             <div className="hidden md:flex absolute bottom-6 flex-col items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
                 {/* ... Footer Content ... */}
