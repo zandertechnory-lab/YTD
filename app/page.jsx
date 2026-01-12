@@ -24,27 +24,14 @@ export default function Home() {
     const handleFetchMetadata = async () => {
         if (!url) return;
 
-        setLoading(true);
-        setError('');
-        setVideoData(null);
+        // Skip metadata fetch and redirect directly to SaveFrom
+        // This avoids YouTube's bot detection entirely
+        const externalDownloader = `https://savefrom.net/#url=${encodeURIComponent(url)}`;
+        window.open(externalDownloader, '_blank');
+        toast.success('Opening SaveFrom downloader...');
 
-        try {
-            // Validate first
-            const validateRes = await axios.post('/api/validate', { url });
-            if (!validateRes.data.isValid) {
-                throw new Error('Invalid YouTube URL');
-            }
-
-            // Fetch metadata
-            const metaRes = await axios.post('/api/fetch-metadata', { url });
-            setVideoData(metaRes.data);
-            toast.success('Video found!');
-        } catch (err) {
-            setError(err.response?.data?.error || err.message || 'Failed to fetch video');
-            toast.error(err.message || 'Failed to fetch video');
-        } finally {
-            setLoading(false);
-        }
+        // Clear the input
+        setUrl('');
     };
 
     const handleDownload = async ({ quality, isAudioOnly, onProgress }) => {
