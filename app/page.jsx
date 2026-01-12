@@ -8,6 +8,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import AnimatedInput from '@/components/ui/AnimatedInput';
 import MobileNav from '@/components/MobileNav';
 import VideoPreview from '@/components/VideoPreview';
+import InstallPrompt from '@/components/InstallPrompt';
 
 export default function Home() {
     const [url, setUrl] = useState('');
@@ -27,11 +28,11 @@ export default function Home() {
         // Skip metadata fetch and redirect directly to SaveFrom
         // This avoids YouTube's bot detection entirely
         const externalDownloader = `https://savefrom.net/#url=${encodeURIComponent(url)}`;
-        window.open(externalDownloader, '_blank');
-        toast.success('Opening SaveFrom downloader...');
 
-        // Clear the input
-        setUrl('');
+        // Open in same window to keep user in the app (embedded browser)
+        window.location.href = externalDownloader;
+
+        toast.success('Redirecting to downloader...');
     };
 
     const handleDownload = async ({ quality, isAudioOnly, onProgress }) => {
@@ -245,6 +246,7 @@ export default function Home() {
                 </div>
             </div>
 
+            <InstallPrompt />
             <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
     );
