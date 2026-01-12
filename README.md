@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎬 NeonDownloader - YouTube Video Downloader
 
-## Getting Started
+A modern, cyberpunk-themed YouTube video downloader built with Next.js 16, featuring a stunning neon UI and mobile-first design.
 
-First, run the development server:
+![NeonDownloader](public/logo-app.png)
+
+## ✨ Features
+
+- 🎨 **Cyberpunk/Neon Aesthetic** - Beautiful glassmorphic UI with neon accents
+- 📱 **Mobile-First Design** - Optimized for mobile with bottom navigation
+- 🔄 **PWA Support** - Install as a native app on any device
+- ⚡ **Fast Downloads** - Stream videos directly without timeouts
+- 🎵 **Audio Extraction** - Download as MP3 or MP4
+- 🎯 **Quality Selection** - Choose from 360p to 4K
+- 🌐 **No Limits** - No download restrictions or watermarks
+
+## 🚀 Live Demo
+
+**Production:** [https://neondownloader.onrender.com](https://neondownloader.onrender.com)
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Styling:** Tailwind CSS 4
+- **Animations:** Framer Motion
+- **Video Processing:** @distube/ytdl-core
+- **Icons:** Lucide React
+- **Deployment:** Render
+
+## 📦 Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/zandertechnory-lab/YTD.git
+cd YTD
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🌐 Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Deploy to Render (Recommended)
 
-## Learn More
+1. **Fork/Clone this repository**
+2. **Sign up at [Render](https://render.com)**
+3. **Create a new Web Service**
+   - Connect your GitHub repository
+   - Select `zandertechnory-lab/YTD`
+   - Render will auto-detect the `render.yaml` configuration
+4. **Click "Create Web Service"**
 
-To learn more about Next.js, take a look at the following resources:
+That's it! Render will automatically:
+- Install dependencies
+- Build your app
+- Deploy it live
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Manual Deployment Settings
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+If not using `render.yaml`:
 
-## Deploy on Vercel
+| Setting | Value |
+|---------|-------|
+| **Build Command** | `npm install && npm run build` |
+| **Start Command** | `npm start` |
+| **Node Version** | 18.17.0 or higher |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📱 Mobile App (Play Store)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This app is PWA-ready and can be packaged as a Trusted Web Activity (TWA) for the Google Play Store:
+
+1. Update `manifest.json` with your production URL
+2. Use [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) to generate the APK
+3. Submit to Play Store
+
+## 🎨 Branding
+
+- **Creator:** EmmaTechnocom
+- **Partner:** Digital Flux
+- **Design:** Cyberpunk/Neon theme with glassmorphism
+
+## ⚠️ Important Notes
+
+- **YouTube's Terms:** This tool is for educational purposes. Respect YouTube's Terms of Service.
+- **Rate Limiting:** YouTube may block excessive requests. Use responsibly.
+- **Render Free Tier:** 750 hours/month, sleeps after 15 minutes of inactivity.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Built with [Next.js](https://nextjs.org)
+- Video processing by [@distube/ytdl-core](https://github.com/distubejs/ytdl-core)
+- Deployed on [Render](https://render.com)
+
+---
+
+**Made with ❤️ by EmmaTechnocom**
